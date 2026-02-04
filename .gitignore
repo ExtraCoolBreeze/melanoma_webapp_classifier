@@ -1,0 +1,22 @@
+# project specific python environment files
+.venv/
+venv/
+
+# unnecessary python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ISIC image files and meta data
+data/
+
+
+# internal documents and temp files
+*.log
+*.tmp
+notes.md
+logbook.md
+
+# visual code settings
+.vscode/
