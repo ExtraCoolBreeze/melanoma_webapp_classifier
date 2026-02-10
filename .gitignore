@@ -20,3 +20,10 @@ logbook.md
 
 # visual code settings
 .vscode/
+
+# unnecessary node files
+node_modules/
+dist/
+
+# model too large to include in Github repo
+model/hf/
