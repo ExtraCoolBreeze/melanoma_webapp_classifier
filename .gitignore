@@ -27,3 +27,6 @@ dist/
 
 # model too large to include in Github repo
 model/hf/
+
+# Apple specific files
+.DS_Store
