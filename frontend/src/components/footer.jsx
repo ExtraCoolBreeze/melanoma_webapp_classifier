@@ -1,0 +1,26 @@
+function SiteFooter() {
+  return (
+<footer className="bg-white text-black py-8 mt-auto">
+  <div className="max-w-300 mx-auto px-8">
+    <div className="grid grid-cols-[1fr_2fr_1fr] gap-8 mb-4">
+      <div text-right>
+        <a className="text-black hover:text-[#005EB8] transition-colors cursor-pointer underline whitespace-nowrap" href="#top">
+          Back to Top
+        </a>
+      </div>
+      <div></div>
+      <div className="text-right">
+        <a className="text-black hover:text-[#005EB8] transition-colors underline" href="https://www.nhs.uk/conditions/melanoma-skin-cancer/" target="_blank">
+          Official NHS Skin Cancer Information
+        </a>
+      </div>
+    </div>
+    <div className="text-center">
+      @ Copyright Spot Check Medical 2026
+    </div>
+  </div>
+</footer>
+  );
+}
+
+export default SiteFooter;
