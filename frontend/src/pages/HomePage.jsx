@@ -9,6 +9,8 @@ function HomePage() {
 
   const [imageUrl, setImageUrl] = useState("");
   const [fileName, setFileName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
 
   function handleUploadClick() {
     if (fileInputRef.current) {
@@ -25,15 +27,51 @@ function HomePage() {
     const localUrl = URL.createObjectURL(file);
     setImageUrl(localUrl);
     setFileName(file.name);
+    setError("")
   }
 
-  function handleAnalyseClick() {
-    navigate("/analysis", {
-      state: {
-        imageUrl: imageUrl,
-        fileName: fileName
+  
+  const [error, setError] = useState("");
+
+  async function handleAnalyseClick() {
+    if (!imageUrl) {
+      setError("Please upload an image for analysis");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const file = fileInputRef.current.files[0];
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("http://localhost:8000/predict", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("cannot retreive analysis data");
       }
-    });
+
+      const predictionData = await response.json();
+
+      navigate("/analysis", {
+        state: {
+          predictionData: predictionData,
+          imageUrl: imageUrl,
+          fileName: fileName,
+        },
+      });
+    } catch (err) {
+      console.error("error", err);
+      setError("Could not analyse image");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   let imageDisplay;
@@ -45,17 +83,18 @@ function HomePage() {
 
   let fileNameDisplay;
   if (fileName) {
-    fileNameDisplay = fileName.toUpperCase();
+    fileNameDisplay = fileName;
   } else {
     fileNameDisplay = "File Name";
   }
 
   return (
+
     <div className="min-h-screen flex flex-col bg-[#005EB8]">
       <SiteHeader />
 
-      <div className="w-full mx-auto px-4 py-8 flex-1">
-        <div className="bg-white p-8 rounded-xl my-8 text-black">
+      <div className="w-full py-8 flex-1">
+        <div className="bg-white p-8 my-8 text-black">
           <h2 className="text-2xl font-semibold mb-4 mt-0">About</h2>
           <p className="mb-4 leading-relaxed">
             Spot Check Medical is an academic prototype web application designed to assist with the analysis of skin lesion images as part of an undergraduate honours project.
@@ -85,10 +124,10 @@ function HomePage() {
           </p>
         </div>
         <div className="h-0.5 bg-linear-to-r from-transparent via-navy-blue to-transparent my-8" />
-        <div className="bg-white p-8 rounded-xl shadow-sm my-8">
+        <div className="bg-white p-8 shadow-sm my-8">
           <div className="flex justify-center my-8">
             <div>
-              <div className="w-100 h-100 border-2 border-gray-300 rounded-xl flex items-center justify-center overflow-hidden bg-light-gray">
+              <div className="w-100 h-100 border-2 border-gray-300 flex items-center justify-center overflow-hidden bg-light-gray">
                 {imageDisplay}
               </div>
               <div className="text-center mt-2 font-medium text-black text-sm">
@@ -98,6 +137,11 @@ function HomePage() {
           </div>
 
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden"/>
+          {error && (
+            <div className="text-center mb-4 text-red-600 font-semibold">
+              {error}
+            </div>
+          )}
 
           <div className="flex gap-4 justify-center mt-8">
             <button className="bg-[#005EB8] hover:opacity-90 text-white font-semibold px-8 py-3 rounded-lg transition-opacity underline" onClick={handleUploadClick}>
@@ -115,4 +159,5 @@ function HomePage() {
     </div>
   );
 }
+
 export default HomePage;

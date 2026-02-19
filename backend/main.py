@@ -22,7 +22,7 @@ def predictImage(file: UploadFile = File(...)):
         "label": "melanoma",
         "confidence": 0.01,
         "probabilities": {
-            "melignant": 0.99,
+            "malignant": 0.99,
             "benign": 0.40
         }
     }
