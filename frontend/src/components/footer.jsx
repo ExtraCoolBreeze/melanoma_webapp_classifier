@@ -10,7 +10,7 @@ function SiteFooter() {
       </div>
       <div></div>
       <div className="text-right">
-        <a className="text-black hover:text-[#005EB8] transition-colors underline" href="https://www.nhs.uk/conditions/melanoma-skin-cancer/" target="_blank">
+        <a className="text-black hover:text-[#005EB8] transition-colors underline whitespace-nowrap" href="https://www.nhs.uk/conditions/melanoma-skin-cancer/" target="_blank">
           Official NHS Skin Cancer Information
         </a>
       </div>
