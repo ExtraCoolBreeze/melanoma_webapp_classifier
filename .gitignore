@@ -8,10 +8,6 @@ __pycache__/
 *.pyo
 *.pyd
 
-# ISIC image files and meta data
-data/
-
-
 # internal documents and temp files
 *.log
 *.tmp
