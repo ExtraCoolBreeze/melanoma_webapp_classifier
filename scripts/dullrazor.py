@@ -16,7 +16,19 @@ def image_preprocessing(acceptedImage):
 
     # removing hairs using dullrazor function
     processedImage = dullrazor(acceptedImage)
-    return processedImage
+
+    #get the original image dimensions
+    originalHeight, originalWidth = processedImage.shape[:2]
+
+    #define model imput size 256 and calculate scale
+    newWidth = 256
+    reduceScale = newWidth / min(originalHeight, originalWidth)
+
+    #resize the image using INTER_LANCZOS4 to preserve aspect ratio
+    scaledImage = cv2.resize(processedImage, None, fx=reduceScale, fy=reduceScale, interpolation=cv2.INTER_LANCZOS4)
+
+    #return the scaled image
+    return scaledImage
 
 #defining the dullrazor function along with passing variables
 def dullrazor(acceptedImage, lowbound=10, showimgs=False, filterstruc=9, inpaintmat=6):
@@ -81,14 +93,18 @@ for index, imagePath in enumerate(imageBatch, start=1):
         )
         continue
     
-    #current image output from loop
-    loopOutput = image_preprocessing(imageinLoop)
-
     #set new cleaned file name
     cleanedfileName = f"cleaned_{imagePath.name}"
 
     #set full file path and directory
     savedfilePath = savedImageDir / cleanedfileName
+
+    if savedfilePath.exists():
+        print(f"[{index}/{imageCount}] File {cleanedfileName} already processed, skipping file")
+        continue
+
+    #current image output from loop
+    loopOutput = image_preprocessing(imageinLoop)
 
     #save image
     comfirmedImage = cv2.imwrite(str(savedfilePath), loopOutput)
