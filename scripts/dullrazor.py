@@ -3,7 +3,7 @@ import cv2
 from pathlib import Path
 #set location of image to process and save
 newImageDir = Path ("/Volumes/USB DRIVE/ISIC2020Data/TrainingData/ISIC_2020_Training_JPEG/train/")
-savedImageDir = Path ("/Volumes/USB DRIVE/ISIC2020Data/TrainingData/cleanedData")
+savedImageDir = Path ("/Users/craig/Desktop/TrainingData/cleanedData_Final")
 
 #defining accepted file extensions 
 acceptedfileExtensions = {".jpg", ".jpeg", ".png"}
@@ -20,15 +20,30 @@ def image_preprocessing(acceptedImage):
     #get the original image dimensions
     originalHeight, originalWidth = processedImage.shape[:2]
 
-    #define model imput size 256 and calculate scale
-    newWidth = 256
-    reduceScale = newWidth / min(originalHeight, originalWidth)
+    #set square size using height and width
+    squareSize = max(originalHeight, originalWidth)
 
-    #resize the image using INTER_LANCZOS4 to preserve aspect ratio
-    scaledImage = cv2.resize(processedImage, None, fx=reduceScale, fy=reduceScale, interpolation=cv2.INTER_LANCZOS4)
+    #calculate padding
+    heightPadding = squareSize - originalHeight
+    widthPadding = squareSize - originalWidth
 
-    #return the scaled image
-    return scaledImage
+    #calculate padding for each side of square
+    topPad = heightPadding // 2
+    bottomPad = heightPadding - topPad
+    leftPad = widthPadding // 2
+    rightPad = widthPadding - leftPad
+
+    #pad image to square using a black border
+    paddedImage = cv2.copyMakeBorder(processedImage, topPad, bottomPad, leftPad, rightPad, cv2.BORDER_CONSTANT, value=[0, 0, 0])
+
+    #set target size for model input
+    targetSize = 256
+
+    #resize padded square image using INTER_LANCZOS4 for downsizing
+    resizedImage = cv2.resize(paddedImage, (targetSize, targetSize), interpolation=cv2.INTER_LANCZOS4)
+
+    #return the resized image
+    return resizedImage
 
 #defining the dullrazor function along with passing variables
 def dullrazor(acceptedImage, lowbound=10, showimgs=False, filterstruc=9, inpaintmat=6):
