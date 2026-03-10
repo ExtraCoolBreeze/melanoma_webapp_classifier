@@ -3,7 +3,7 @@ import cv2
 from pathlib import Path
 #set location of image to process and save
 newImageDir = Path ("/Volumes/USB DRIVE/ISIC2020Data/TrainingData/ISIC_2020_Training_JPEG/train/")
-savedImageDir = Path ("/Volumes/USB DRIVE/ISIC2020Data/TrainingData/cleanedData")
+savedImageDir = Path ("/Users/craig/Desktop/TrainingData/cleanedData_Final")
 
 #defining accepted file extensions 
 acceptedfileExtensions = {".jpg", ".jpeg", ".png"}
@@ -16,7 +16,34 @@ def image_preprocessing(acceptedImage):
 
     # removing hairs using dullrazor function
     processedImage = dullrazor(acceptedImage)
-    return processedImage
+
+    #get the original image dimensions
+    originalHeight, originalWidth = processedImage.shape[:2]
+
+    #set square size using height and width
+    squareSize = max(originalHeight, originalWidth)
+
+    #calculate padding
+    heightPadding = squareSize - originalHeight
+    widthPadding = squareSize - originalWidth
+
+    #calculate padding for each side of square
+    topPad = heightPadding // 2
+    bottomPad = heightPadding - topPad
+    leftPad = widthPadding // 2
+    rightPad = widthPadding - leftPad
+
+    #pad image to square using a black border
+    paddedImage = cv2.copyMakeBorder(processedImage, topPad, bottomPad, leftPad, rightPad, cv2.BORDER_CONSTANT, value=[0, 0, 0])
+
+    #set target size for model input
+    targetSize = 256
+
+    #resize padded square image using INTER_LANCZOS4 for downsizing
+    resizedImage = cv2.resize(paddedImage, (targetSize, targetSize), interpolation=cv2.INTER_LANCZOS4)
+
+    #return the resized image
+    return resizedImage
 
 #defining the dullrazor function along with passing variables
 def dullrazor(acceptedImage, lowbound=10, showimgs=False, filterstruc=9, inpaintmat=6):
@@ -81,14 +108,18 @@ for index, imagePath in enumerate(imageBatch, start=1):
         )
         continue
     
-    #current image output from loop
-    loopOutput = image_preprocessing(imageinLoop)
-
     #set new cleaned file name
     cleanedfileName = f"cleaned_{imagePath.name}"
 
     #set full file path and directory
     savedfilePath = savedImageDir / cleanedfileName
+
+    if savedfilePath.exists():
+        print(f"[{index}/{imageCount}] File {cleanedfileName} already processed, skipping file")
+        continue
+
+    #current image output from loop
+    loopOutput = image_preprocessing(imageinLoop)
 
     #save image
     comfirmedImage = cv2.imwrite(str(savedfilePath), loopOutput)
