@@ -22,7 +22,7 @@ function AnalysisPage() {
 
   let confidencePercent = null;
   if (predictionData) {
-    confidencePercent = predictionData.confidence;
+    confidencePercent = predictionData.confidence * 100;
   }
 
   useEffect(() => {
@@ -33,8 +33,8 @@ function AnalysisPage() {
 
       const ctx = chartRef.current.getContext('2d');
 
-      const benignProb = (predictionData.probabilities.benign * 100).toFixed(2);
-      const malignantProb = (predictionData.probabilities.malignant * 100).toFixed(2);
+      const benignProb = predictionData.probabilities.benign * 100;
+      const malignantProb = predictionData.probabilities.malignant * 100;
 
       chartInstance.current = new Chart(ctx, {
         type: 'bar',
@@ -73,7 +73,7 @@ function AnalysisPage() {
             tooltip: {
               callbacks: {
                 label(context) {
-                  return 'Probability: ' + context.parsed.y.toFixed(2) + '%'; 
+                  return 'Probability: ' + context.parsed.y + '%'; 
                 }
               }
             }
@@ -148,7 +148,7 @@ function AnalysisPage() {
           </div>
         </div>
 
-<div className="flex flex-col md:flex-row gap-8 mb-8">
+      <div className="flex flex-col md:flex-row gap-8 mb-8">
         <div className="md:w-1/2 p-4 rounded">
           <h3 className="text-lg font-semibold mb-3">Classification Prediction</h3>
           <p className="mb-3 leading-relaxed">
@@ -247,8 +247,6 @@ function AnalysisPage() {
           <p className="mb-4 leading-relaxed">
             If you are concerned about a skin lesion or any aspect of your health, you should consult a qualified healthcare professional.
           </p>
-
-      <p>The results of the analysis will be shown here.</p>
           <h2 className="text-2xl font-semibold mb-4 mt-6">Data Handling</h2>
           <p className="mb-4 leading-relaxed">
             Uploaded images are used only for the purpose of analysis within the application.

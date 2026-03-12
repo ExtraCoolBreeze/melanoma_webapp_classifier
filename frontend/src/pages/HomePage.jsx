@@ -93,7 +93,7 @@ function HomePage() {
     <div className="min-h-screen flex flex-col bg-[#005EB8]">
       <SiteHeader />
 
-      <div className="w-full py-8 flex-1">
+      <div className="w-full pt-8 pb-8 flex-1 flex flex-col">
         <div className="bg-white p-8 my-8 text-black">
           <h2 className="text-2xl font-semibold mb-4 mt-0">About</h2>
           <p className="mb-4 leading-relaxed">
@@ -123,8 +123,7 @@ function HomePage() {
             No images or personal data are intentionally stored, shared, or used beyond the scope of this academic demonstration.
           </p>
         </div>
-        <div className="h-0.5 bg-linear-to-r from-transparent via-navy-blue to-transparent my-8" />
-        <div className="bg-white p-8 shadow-sm my-8">
+        <div className="bg-white p-8 shadow-sm mt-8 flex-1 flex flex-col justify-center">
           <div className="flex justify-center my-8">
             <div>
               <div className="w-100 h-100 border-2 border-gray-300 flex items-center justify-center overflow-hidden bg-light-gray">
@@ -153,7 +152,6 @@ function HomePage() {
             </button>
           </div>
         </div>
-        <div className="h-0.5 bg-linear-to-r from-transparent via-navy-blue to-transparent my-8" />
       </div>
       <SiteFooter />
     </div>
