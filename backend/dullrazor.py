@@ -1,3 +1,8 @@
+#Name: Craig McMillan
+#Student Number: 2390641
+#Date: 14/03/26
+#DullRazor script for image preprocessing inlcudes hair removal, image padding and resizing to fit model input size.
+
 #import cv2 and pathlib
 import cv2
 from pathlib import Path
@@ -5,7 +10,7 @@ from pathlib import Path
 #defining accepted file extensions 
 acceptedfileExtensions = {".jpg", ".jpeg", ".png"}
 
-#defining image_preprocessing function that accepts an image
+#defining image_preprocessing function that accepts an image, removes hair, pads to a square, resizes it to 256x256 and returns the resized image
 def image_preprocessing(acceptedImage):
 
     #getting output of dullrazor function
@@ -39,7 +44,9 @@ def image_preprocessing(acceptedImage):
     #return the resized image
     return resizedImage
 
-#defining the dullrazor function along with passing variables
+#defining the dullrazor function along with passing the image and tested parameters,
+#applies greyscale, a blackhat transformation, binary masking and then inpaints
+# before returning the final cleaned image
 def dullrazor(acceptedImage, lowbound=10, showimgs=False, filterstruc=9, inpaintmat=6):
 
     #corrected colour change BGR to grayscale

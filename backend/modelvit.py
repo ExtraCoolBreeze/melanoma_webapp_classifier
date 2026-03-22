@@ -1,3 +1,10 @@
+#Name: Craig McMillan
+#Student Number: 2390641
+#Date: 14/03/26
+# This file loads the MobileViT-s model with pretrained weights, replaces the classifier for binary classification, 
+# applies the best trained model weights, and defines the modelPredict function used by the FastAPI backend for inference.
+
+
 #importing libraries
 from transformers import AutoImageProcessor, MobileViTForImageClassification
 import torch
@@ -5,7 +12,7 @@ import torch.nn as nn
 
 #setting file path loading in weights and best trained model
 modelWeights = "/Users/craig/Documents/GitHub/melanoma_webapp_classifier/model/hf/apple_mobilevit_small"
-trainedModel = "/Users/craig/Documents/GitHub/melanoma_webapp_classifier/model/trained/best_adam.pth"
+trainedModel = "/Users/craig/Documents/GitHub/melanoma_webapp_classifier/model/trained/best_sgd.pth"
 
 #defining deviceDelection function to select best device based on platform
 def deviceSelection():
@@ -16,7 +23,7 @@ def deviceSelection():
     else:
         return torch.device("cpu")
 
-#chooseing the best device based on above function output and printing result
+#choosing the best device based on above function output and printing result
 chosenDevice = deviceSelection()
 print(f"Device selected {chosenDevice}")
 
@@ -40,12 +47,13 @@ print(f"Loaded trained weights from {trainedModel}")
 print("Model image size:", classificationModel.config.image_size)
 print("Classifier head: ", classificationModel.classifier)
 
-#defininig modelPredict function 
+#defining modelPredict function which accepts a preprocessed image, puts it through the the model,
+#converts the logit result to a probability using sigmoid, and returns the classification, confidence score and class probabilities
 def modelPredict(preprocessedImage):
     #setting threshold
     threshold = 0.5
 
-    #processing image and 
+    #processing image
     processedInputs  = imageProcessor(images=preprocessedImage, return_tensors="pt", do_resize=False, do_center_crop=False)
     modelInput = processedInputs["pixel_values"].to(chosenDevice)
 

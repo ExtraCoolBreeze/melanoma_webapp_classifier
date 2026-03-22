@@ -1,23 +1,32 @@
+//Name: Craig McMillan
+//Student Number: S2390641
+//Date: 14/03/26
+//The home page handles image upload, along with uploaded image preview, 
+//along with submitting the uploaded image to the backend for analysis
+
+//importing react routing
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SiteHeader from "../components/header";
 import SiteFooter from "../components/footer";
 
+//entry point for the page
 function HomePage() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
+  //declairing  variables for storing the file name, uploaded image 
   const [imageUrl, setImageUrl] = useState("");
   const [fileName, setFileName] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
-
+  // defining handleUploadClick function that opens the file selector when a user clicks the upload button
   function handleUploadClick() {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   }
 
+  //defines the handleFileChange function that displays the user selected image and stores the file name
   function handleFileChange(event) {
     const file = event.target.files[0];
     if (!file) {
@@ -33,6 +42,8 @@ function HomePage() {
   
   const [error, setError] = useState("");
 
+  //handleAnalyseClick function sends the uploaded image to the backend for analysis
+  //receives the returned prediction data and navigates to the analysis page
   async function handleAnalyseClick() {
     if (!imageUrl) {
       setError("Please upload an image for analysis");
@@ -74,6 +85,7 @@ function HomePage() {
     }
   }
 
+  // imageDisplay displays the uploaded image or a placeholder while not image is selected
   let imageDisplay;
   if (imageUrl) {
     imageDisplay = ( <img src={imageUrl} alt="Uploaded image" className="max-w-full max-h-full object-contain"/>);
@@ -81,6 +93,7 @@ function HomePage() {
     imageDisplay = ( <span className="text-black font-medium">Uploaded Image</span> );
   }
 
+  //fileNameDisplay displays the uploaded file name or a placeholder if no file is selected
   let fileNameDisplay;
   if (fileName) {
     fileNameDisplay = fileName;
@@ -88,8 +101,8 @@ function HomePage() {
     fileNameDisplay = "File Name";
   }
 
+  //renders homepage layout
   return (
-
     <div className="min-h-screen flex flex-col bg-[#005EB8]">
       <SiteHeader />
 

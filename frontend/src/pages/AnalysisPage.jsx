@@ -1,15 +1,23 @@
+//Name: Craig McMillan
+//Student Number: S2390641
+//Date: 14/03/26
+//The analysis page receives the analysis output from the backend and displays the prediction, confidence and probability scores, along with a bar chart
+
+//importing react routing
 import { useLocation, useNavigate } from "react-router-dom";
 import SiteHeader from "../components/header";
 import SiteFooter from "../components/footer";
 import { useEffect, useRef } from "react";
 import Chart from 'chart.js/auto';
 
+//entry point for the page
 function AnalysisPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
+  //These variables stores the prediction data, image url and file name passed from the home page
   let predictionData = null;
   let imageUrl = null;
   let fileName = null;
@@ -20,11 +28,14 @@ function AnalysisPage() {
     fileName = location.state.fileName;
   }
 
+  //this variable stores the confidence score 
   let confidencePercent = null;
   if (predictionData) {
+    //converts the confidence score to a percentage for display
     confidencePercent = predictionData.confidence * 100;
   }
 
+  //useEffect function creates the chart, displays chart data, and destroys the chart display
   useEffect(() => {
     if (predictionData && chartRef.current) {
       if (chartInstance.current) {
@@ -90,7 +101,10 @@ function AnalysisPage() {
     };
   }, [predictionData]);
 
+  //resultsContent variable 
   let resultsContent;
+  
+  //Displays the results section without prediction data if no data was received
   if (!predictionData) {
     resultsContent = (
       <div>
@@ -125,6 +139,7 @@ function AnalysisPage() {
       fileNameDisplay = "File Name";
     }
 
+    //populates the results layout with the image analysis data
     resultsContent = (
       <div>
         <h1 className="text-5xl font-normal leading-tight mb-4">Analysis Results</h1>
@@ -220,8 +235,8 @@ function AnalysisPage() {
     );
   }
 
+  //renders the about, disclaimer, and data handling page content. Also displays the resultsContent section
   return (
-
     <div className="min-h-screen flex flex-col bg-[#005EB8]">
       <SiteHeader />
       <div className="w-full py-8 flex-1">

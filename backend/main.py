@@ -1,3 +1,8 @@
+#Name: Craig McMillan
+#Student Number: 2390641
+#Date: 14/03/26
+#FastAPI backend file for handling image upload, DullRazor preprocessing, MobileViT-s model inference and returning results to the fortend
+
 #importing libraries
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,7 +33,10 @@ acceptedFileExtensions = {".jpg", ".jpeg", ".png"}
 def root():
     return {"message": "Backend is running"}
 
-    #defining predict endpoint 
+#defining predict endpoint, this accepts an uploaded image, converts it
+#runs it through the DullRazor preprocessor, then through MobileViT-s for analysis
+#this then returns the classification result, confidence and probablies
+
 @app.post("/predict")
 #defining predictsImage function that acepts uploaded files
 async def predictImage(file: UploadFile = File(...)):

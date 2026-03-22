@@ -1,3 +1,10 @@
+//Name: Craig McMillan
+//Student Number: S2390641
+//Date: 14/03/26
+//The header is a reusable component that is used across all pages, displays top navigation bar with app icon, app
+//name and home page link
+
+
 import { Link } from "react-router-dom";
 
 function SiteHeader() {
