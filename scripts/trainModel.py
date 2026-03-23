@@ -228,20 +228,23 @@ def main():
     positiveWeightValue = torch.tensor([benignCount / malignantCount], dtype=torch.float32)
     positiveWeight = positiveWeightValue.to(chosenDevice)
 
-    #setting loss function and class weighting for minority class
+    #applying the positive weight to the loss function to reduce missed malignant class predictions
     lossFunction = nn.BCEWithLogitsLoss(pos_weight=positiveWeight)
-    print(f"The loss function has been set to BCEWithLogitsLoss along with postive weight of {positiveWeight.item():.1f} asigned to address the class imbalance")
+    print(f"The loss function has been set to BCEWithLogitsLoss along with positive weight of {positiveWeight.item():.1f} assigned to address the class imbalance")
     print(" ")
-    #select optimiser used in training based on name chosen for training cycle
+
+    #select optimiser for the current training run
     if optimiserName == "adam":
         selectedOptimiser = torch.optim.Adam(model.parameters(), lr=learningRate)
     elif optimiserName == "rmsprop":
         selectedOptimiser = torch.optim.RMSprop(model.parameters(), lr=learningRate)
     elif optimiserName == "sgd":
         selectedOptimiser = torch.optim.SGD(model.parameters(), lr=learningRate)
+
     #print the optimiser selected and the learning rate applied
     print(f"{optimiserName} selected with a learning rate of {learningRate}")
     print(" ")
+
     #set values for tracking validation and training history
     bestValLoss = float("inf")
     bestValAcc = 0.0
