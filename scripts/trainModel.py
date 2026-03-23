@@ -1,3 +1,8 @@
+#Name: Craig McMillan
+#Student Number: 2390641
+#Date: 14/03/26
+#Training script for the MobileViT-S model
+
 #importing required libraries
 import os
 import time
@@ -34,10 +39,10 @@ def deviceSelection():
     else:
         return torch.device("cpu")
 
-#defining SkinLesionDataset class for loading images and labels
+#defining SkinLesionDataset class for loading images and labels from the dataset
 class SkinLesionDataset(Dataset):
 
-    #defining __init__ method for csv, image and processor data
+    #defining __init__ method for storing the loaded csv files, loading images and image preprocessor
     def __init__(self, loadedCSV, imgDataset, processor):
         self.csvData = loadedCSV.reset_index(drop=True)
         self.imgData = imgDataset
@@ -78,7 +83,7 @@ def trainEpoch(model, loader, optimiser, lossFunction, device):
         inputs = inputs.to(device)
         labels = labels.to(device).unsqueeze(1)
         
-        #added oprimiser.zero_grad to improve performance
+        #added optimiser.zero_grad to improve performance
         optimiser.zero_grad()
 
         #calculating loss
@@ -101,12 +106,13 @@ def trainEpoch(model, loader, optimiser, lossFunction, device):
         if batchNum % 50 == 0:
             print(f"Batch {batchNum}/{totalBatches}")
 
-    #calcuates the average training loss and accuracy for the epoch and returns the values
+    #calculates the average training loss and accuracy for the epoch and returns the values
     averageLoss = totalLoss / len(loader)
     accuracy = totalCorrect / totalImages
     return averageLoss, accuracy
 
-#Defining validateEpoch function to evaluate model
+#Defining validateEpoch function to evaluate model without updating model weights
+#returns the average validation loss and accuracy
 def validateEpoch(model, loader, lossFunction, device):
     model.eval()
     totalLoss = 0.0
@@ -134,12 +140,13 @@ def validateEpoch(model, loader, lossFunction, device):
             #print the patch progress every 50 batches to track progress
             if batchNum % 50 == 0:
                 print(f"Batch {batchNum}/{totalBatches}")
-    #calcualte average loss and accuracy for each epoch and returns the values
+    #calculate average loss and accuracy for each epoch and returns the values
     averageLoss = totalLoss / len(loader)
     accuracy = totalCorrect / totalImages
     return averageLoss, accuracy
 
-#defining the main method
+#defining the main training method that load data, configures the model
+#runs the training with the selected optimiser and saved the best model
 def main():
     chosenDevice = deviceSelection()
     print(f"Chosen device {chosenDevice}")
@@ -159,7 +166,7 @@ def main():
     testSplitPath = os.path.join(savedWeights, "test_split.csv")
     validationSplitPath = os.path.join(savedWeights, "validation_split.csv")
     
-    #checks if split files realdy exist 
+    #checks if split files already exist 
     splitsExist = os.path.exists(trainSplitPath) and os.path.exists(testSplitPath) and os.path.exists(validationSplitPath)
 
     #if splits exist load files
@@ -167,7 +174,7 @@ def main():
         train_df = pd.read_csv(trainSplitPath)
         test_df = pd.read_csv(testSplitPath)
         validate_df = pd.read_csv(validationSplitPath)
-        print("split ccsv files found, loading files")
+        print("split csv files found, loading files")
     else:
         #else create and save new splits
         uniquePatients = cleanedCSV_df["patient_id"].unique()
@@ -180,7 +187,7 @@ def main():
         train_df.to_csv(trainSplitPath, index=False)
         test_df.to_csv(testSplitPath, index=False)
         validate_df.to_csv(validationSplitPath, index=False)
-        print("No csv files found, splits created using random_state=42 for reproduceability and saved file")
+        print("No csv files found, splits created using random_state=42 for reproducibility and saved file")
     #print the results of the train test split
     print(" ")
     print("Patient level split applied based on data analysis using a 70/30, with 30 spit evenly between test and validation sets")
@@ -189,8 +196,10 @@ def main():
     print(f"Validation: {len(validate_df)} images with {validate_df['target'].sum()} malignant cases")
     print(" ")
 
-    #load the image processing with the pretrained weights
+    #load the image processor with the pretrained weights
     processor = AutoImageProcessor.from_pretrained(modelWeights, use_fast=False)
+
+    #load the pretrained model and get the existing classifier feature input size
     model = MobileViTForImageClassification.from_pretrained(modelWeights)
     inputFeatures = model.classifier.in_features
     
@@ -219,20 +228,23 @@ def main():
     positiveWeightValue = torch.tensor([benignCount / malignantCount], dtype=torch.float32)
     positiveWeight = positiveWeightValue.to(chosenDevice)
 
-    #setting loss function and class weighting for minority class
+    #applying the positive weight to the loss function to reduce missed malignant class predictions
     lossFunction = nn.BCEWithLogitsLoss(pos_weight=positiveWeight)
-    print(f"The loss function has been set to BCEWithLogitsLoss along with postive weight of {positiveWeight.item():.1f} asigned to address the class imbalance")
+    print(f"The loss function has been set to BCEWithLogitsLoss along with positive weight of {positiveWeight.item():.1f} assigned to address the class imbalance")
     print(" ")
-    #select optimiser used in training based on name chosen for training cycle
+
+    #select optimiser for the current training run
     if optimiserName == "adam":
         selectedOptimiser = torch.optim.Adam(model.parameters(), lr=learningRate)
     elif optimiserName == "rmsprop":
         selectedOptimiser = torch.optim.RMSprop(model.parameters(), lr=learningRate)
     elif optimiserName == "sgd":
         selectedOptimiser = torch.optim.SGD(model.parameters(), lr=learningRate)
+
     #print the optimiser selected and the learning rate applied
     print(f"{optimiserName} selected with a learning rate of {learningRate}")
     print(" ")
+
     #set values for tracking validation and training history
     bestValLoss = float("inf")
     bestValAcc = 0.0
@@ -271,7 +283,7 @@ def main():
         history["validationAccuracy"].append(round(valAccuracy, 4))
         history["epoch_time_mins"].append(round(epochTimeMins, 1))
         
-        #print information summary after each epoch compeletes
+        #print information summary after each epoch completes
         print("--")
         print(f"Epoch {epochNum} of {numEpochs} completed in {epochTimeMins:.1f} minutes")
         print(f"Training loss: {round(trainLoss, 4)} with an accuracy of {round(trainAccuracy, 4)}")
@@ -286,7 +298,7 @@ def main():
             bestEpoch = epochNum
             earlyStopCount = 0
             savePath = os.path.join(savedWeights, f"best_{optimiserName}.pth")
-            #saves the model data when best validation loss is calucated
+            #saves the model data when best validation loss is calculated
             torch.save({
                 "epoch": epochNum,
                 "state_dict": model.state_dict(),
@@ -326,7 +338,7 @@ def main():
     print(f"Best Epoch: {bestEpoch}")
     print("--")
     
-    #print wheather training stopped or completed
+    #print whether training stopped or completed
     if epoch + 1 < numEpochs:
         print(f"Training stopped after {epoch + 1} epochs. patience = {patience}")
     else:

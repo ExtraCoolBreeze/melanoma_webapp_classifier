@@ -1,3 +1,8 @@
+//Name: Craig McMillan
+//Student Number: S2390641
+//Date: 14/03/26
+//The footer is a reusable component that is used across all pages, includes naigation links 
+
 function SiteFooter() {
   return (
 <footer className="bg-white text-black py-8 mt-auto">

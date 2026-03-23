@@ -1,3 +1,8 @@
+#Name: Craig McMillan
+#Student Number: 2390641
+#Date: 14/03/26
+#DullRazor script for image preprocessing inlcudes hair removal, image padding and resizing to fit model input size.
+
 #import cv2 and pathlib
 import cv2
 from pathlib import Path
@@ -5,7 +10,7 @@ from pathlib import Path
 #defining accepted file extensions 
 acceptedfileExtensions = {".jpg", ".jpeg", ".png"}
 
-#defining image_preprocessing function that accepts an image
+#defining image_preprocessing function that accepts an image, removes hair, pads to a square, resizes it to 256x256 and returns the resized image
 def image_preprocessing(acceptedImage):
 
     #getting output of dullrazor function
@@ -39,29 +44,29 @@ def image_preprocessing(acceptedImage):
     #return the resized image
     return resizedImage
 
-#defining the dullrazor function along with passing variables
+#defining the dullrazor function along with passing the image and tested parameters,
+#applies greyscale, a blackhat transformation, binary masking and then inpaints
+# before returning the final cleaned image
 def dullrazor(acceptedImage, lowbound=10, showimgs=False, filterstruc=9, inpaintmat=6):
 
-    #corrected colour change BGR to grayscale
+    #converting colour from BGR to grayscale for hair detection
     grayscaleImage = cv2.cvtColor(acceptedImage, cv2.COLOR_BGR2GRAY)
 
-    #set filter size
+    #setting filter size and kernel used to detect hair
     filterSize = (filterstruc, filterstruc)
-
-    #set kernal size
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, filterSize)
 
-    #applying blackhat morphological transformation
+    #applying blackhat morphological transformation to isolate dark hairs
     transformedImage = cv2.morphologyEx(grayscaleImage, cv2.MORPH_BLACKHAT, kernel)
     
-    #adding blur to blackhat mask to smooth out details
+    #adding blur to blackhat mask to reduce image noise to smooth out details before thesholding
     blackhatBlur = cv2.GaussianBlur(transformedImage, (3,3), 0)
 
-    #Adding threshold to correct binary blurred mask to 0 & 255 binary
+    #Adding threshold to correct binary blurred mask to 0 & 255 binary. 0 = skin and 255 = hair
     _, mask = cv2.threshold(blackhatBlur, lowbound, 255, cv2.THRESH_BINARY)
 
 
-    # inpainting using the mask
+    #inpainting the hair located using the binary mask
     finalImage = cv2.inpaint(acceptedImage, mask, inpaintmat, cv2.INPAINT_TELEA)
 
     #display all images using imshow and return final cleaned image
