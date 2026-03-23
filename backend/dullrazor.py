@@ -49,26 +49,24 @@ def image_preprocessing(acceptedImage):
 # before returning the final cleaned image
 def dullrazor(acceptedImage, lowbound=10, showimgs=False, filterstruc=9, inpaintmat=6):
 
-    #corrected colour change BGR to grayscale
+    #converting colour from BGR to grayscale for hair detection
     grayscaleImage = cv2.cvtColor(acceptedImage, cv2.COLOR_BGR2GRAY)
 
-    #set filter size
+    #setting filter size and kernel used to detect hair
     filterSize = (filterstruc, filterstruc)
-
-    #set kernal size
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, filterSize)
 
-    #applying blackhat morphological transformation
+    #applying blackhat morphological transformation to isolate dark hairs
     transformedImage = cv2.morphologyEx(grayscaleImage, cv2.MORPH_BLACKHAT, kernel)
     
-    #adding blur to blackhat mask to smooth out details
+    #adding blur to blackhat mask to reduce image noise to smooth out details before thesholding
     blackhatBlur = cv2.GaussianBlur(transformedImage, (3,3), 0)
 
-    #Adding threshold to correct binary blurred mask to 0 & 255 binary
+    #Adding threshold to correct binary blurred mask to 0 & 255 binary. 0 = skin and 255 = hair
     _, mask = cv2.threshold(blackhatBlur, lowbound, 255, cv2.THRESH_BINARY)
 
 
-    # inpainting using the mask
+    #inpainting the hair located using the binary mask
     finalImage = cv2.inpaint(acceptedImage, mask, inpaintmat, cv2.INPAINT_TELEA)
 
     #display all images using imshow and return final cleaned image

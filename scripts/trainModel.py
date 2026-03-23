@@ -196,8 +196,10 @@ def main():
     print(f"Validation: {len(validate_df)} images with {validate_df['target'].sum()} malignant cases")
     print(" ")
 
-    #load the image processing with the pretrained weights
+    #load the image processor with the pretrained weights
     processor = AutoImageProcessor.from_pretrained(modelWeights, use_fast=False)
+
+    #load the pretrained model and get the existing classifier feature input size
     model = MobileViTForImageClassification.from_pretrained(modelWeights)
     inputFeatures = model.classifier.in_features
     
