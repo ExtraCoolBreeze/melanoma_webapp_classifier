@@ -110,7 +110,7 @@ function HomePage() {
         <div className="bg-white p-8 my-8 text-black">
           <h2 className="text-2xl font-semibold mb-4 mt-0">About</h2>
           <p className="mb-4 leading-relaxed">
-            Spot Check Medical is an academic prototype web application designed to assist with the analysis of skin lesion images as part of an undergraduate honours project.
+            Spot Check Medical is a web application designed to assist with the analysis of skin lesion images as part of an undergraduate honours project.
             This application explores the use of deep learning techniques for medical image classification and is intended solely for research and educational purposes.
           </p>
           <p className="mb-4 leading-relaxed">
@@ -120,7 +120,7 @@ function HomePage() {
 
           <h2 className="text-2xl font-semibold mb-4 mt-6">Disclaimer</h2>
           <p className="mb-4 leading-relaxed">
-            This application is an academic prototype and may contain coding errors, modelling limitations, or biases inherited from the training data.
+            This application may contain coding errors, model limitations, or bias from the training data.
             As a result, classifications produced by the system may be incorrect.
           </p>
           <p className="mb-4 leading-relaxed">
@@ -132,7 +132,7 @@ function HomePage() {
 
           <h2 className="text-2xl font-semibold mb-4 mt-6">Data Handling</h2>
           <p className="mb-4 leading-relaxed">
-            Uploaded images are used only for the purpose of analysis within the application.
+            Uploaded images are used only for analysis within the application.
             No images or personal data are intentionally stored, shared, or used beyond the scope of this academic demonstration.
           </p>
         </div>

@@ -179,7 +179,7 @@ function AnalysisPage() {
           <p className="mb-0 leading-relaxed">
             The confidence score shows how sure the model is about its prediction. A higher percentage means the model believes the image is much more likely to belong to one category than the other.
             A lower percentage means the model sees similarities with both categories and is less certain about its decision.
-            For example, a confidence score close to 100% means the model strongly favours one outcome, whereas a score closer to 50% means the model is not confident in either option. A very low value, such as 1%, would mean the model considers that classification extremely unlikely.
+            For example, a confidence score close to 100% means the model strongly favours one category, whereas a score closer to 50% means the model is much less confident.
             It is important to understand that confidence reflects how certain the model is in its own calculation, and that this does not guarantee that the prediction is medically correct. Even high confidence scores can still be wrong.
           </p>
         </div>
@@ -187,7 +187,7 @@ function AnalysisPage() {
         <div className="md:w-1/2 p-4 rounded">
           <h4 className="text-lg font-semibold mb-3">Understanding the Chart</h4>
           <p className="mb-3 leading-relaxed">
-            The bar chart above shows a simple graphical visual that uses rectangular bars to compare values across categories.
+            The bar chart above shows a simple visual summary that uses rectangular bars to compare values across categories.
             In this case, it is used to visually communicate the models estimated probabilities, making the results easier to interpret at a glance.
           </p>
           <p className="mb-3 leading-relaxed">
@@ -197,15 +197,15 @@ function AnalysisPage() {
             <strong className="text-green-600">Benign (Green):</strong> The probability that the lesion is non-cancerous.
           </p>
           <p className="mb-3 leading-relaxed">
-            <strong className="text-red-600">Malignant (Red):</strong> The probability that the lesion is potentially cancerous
+            <strong className="text-red-600">Malignant (Red):</strong> The probability that the lesion is potentially cancerous.
           </p>
           <p className="mb-3 leading-relaxed">
             The height of each bar corresponds to the probability assigned to that class by the model. 
             The taller bar indicates which classification the model considers more likely for the analysed image.
           </p>
           <p className="mb-0 leading-relaxed">
-            These probability values illustrate how the model distributes its certainty between the two outcomes. They are influenced by the characteristics of the input image, the quality of the data, and the learned feature representations within the MobileViT architecture.
-            As this is a binary classification task, the two probabilities will always sum to a total of 100%, reflecting the models allocation of confidence across the available classes.
+            These probability values show how the model divides its confidence between the two categories. They are influenced by the uploaded image, the quality of the training data, and the patterns the model learned during training.
+            As this is a binary classification task, the two probabilities will always sum to a total of 100%, reflecting the model's allocation of confidence across the available classes.
           </p>
         </div>
       </div>
@@ -213,16 +213,16 @@ function AnalysisPage() {
       <div className="p-4 rounded mb-8">
         <h4 className="text-lg font-semibold mb-3">Limitations of These Results</h4>
         <p className="mb-3 leading-relaxed">
-          The results shown above are produced by an trained deep learning model and should not be interpreted as a medical diagnosis.
-          This model provides a prediction based on patterns learned from training data and does not considered medical advice. Only a qualified healthcare professional can make a formal diagnosis following proper clinical assessment.
+          The results shown above are produced by a trained deep learning model and should not be interpreted as a medical diagnosis.
+          This model provides a prediction based on patterns learned from training data and does not replace medical advice. Only a qualified healthcare professional can make a formal diagnosis following proper clinical assessment.
         </p>
         <p className="mb-3 leading-relaxed">
           The confidence score and probability values reflect how certain the model is in its prediction, not how medically accurate the result is. 
-          A high confidence score does not guarantee correctness, as deep learning models can still make errors, particularly when analysing images that differ from the those selected used during training.
+          A high confidence score does not guarantee correctness, as deep learning models can still make errors, particularly when analysing images that differ from those used during training.
         </p>
         <p className="mb-3 leading-relaxed">
-          The probabilities shown are estimates derived from the training dataset and the MobileViT-S architecture. They do not represent a confirmed medical diagnosis and may be influenced by dataset imbalance, image quality, and model limitations. 
-          This application is an academic prototype intended for research and educational use and does not replace professional medical examination or diagnostic procedures.
+          The probabilities shown are estimates produced by the MobileViT-S model using patterns learned from the training data. They do not represent a confirmed medical diagnosis and may be influenced by dataset imbalance, image quality, and model limitations. 
+          This application is an academic prototype intended for research and educational use and should not replace professional medical examinations or diagnostic procedures.
         </p>
       </div>
 
@@ -243,17 +243,17 @@ function AnalysisPage() {
         <div className="bg-white p-8 my-8 text-black">
           <h2 className="text-2xl font-semibold mb-4 mt-0">About</h2>
           <p className="mb-4 leading-relaxed">
-            Spot Check Medical is an academic prototype web application designed to assist with the analysis of skin lesion images as part of an undergraduate honours project.
+            Spot Check Medical is a web application designed to assist with the analysis of skin lesion images as part of an undergraduate honours project.
             This application explores the use of deep learning techniques for medical image classification and is intended solely for research and educational purposes.
           </p>
           <p className="mb-4 leading-relaxed">
-            The application uses the MobileViT-S deep learning architecture, trained on the ISIC 2020 dataset.
+            The application uses the MobileViT-S deep learning architecture, trained on the ISIC 2020 dataset. 
             This dataset contains dermoscopic images labelled for skin lesion classification and is known to be imbalanced.
           </p>
 
           <h2 className="text-2xl font-semibold mb-4 mt-6">Disclaimer</h2>
           <p className="mb-4 leading-relaxed">
-            This application is an academic prototype and may contain coding errors, modelling limitations, or biases inherited from the training data.
+            This application may contain coding errors, model limitations, or bias from the training data.
             As a result, classifications produced by the system may be incorrect.
           </p>
           <p className="mb-4 leading-relaxed">
@@ -264,7 +264,7 @@ function AnalysisPage() {
           </p>
           <h2 className="text-2xl font-semibold mb-4 mt-6">Data Handling</h2>
           <p className="mb-4 leading-relaxed">
-            Uploaded images are used only for the purpose of analysis within the application.
+            Uploaded images are used only for analysis within the application.
             No images or personal data are intentionally stored, shared, or used beyond the scope of this academic demonstration.
           </p>
         </div>
