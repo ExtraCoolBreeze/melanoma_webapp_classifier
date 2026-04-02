@@ -18,6 +18,8 @@ function HomePage() {
   //declairing  variables for storing the file name, uploaded image 
   const [imageUrl, setImageUrl] = useState("");
   const [fileName, setFileName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  
 
   // defining handleUploadClick function that opens the file selector when a user clicks the upload button
   function handleUploadClick() {
