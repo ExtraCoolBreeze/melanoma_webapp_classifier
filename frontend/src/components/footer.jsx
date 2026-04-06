@@ -9,9 +9,7 @@ function SiteFooter() {
   <div className="max-w-300 mx-auto px-8">
     <div className="grid grid-cols-[1fr_2fr_1fr] gap-2 mb-4">
       <div text-right>
-        <a className="text-black hover:text-[#005EB8] transition-colors cursor-pointer underline whitespace-nowrap" href="#top">
-          Back to Top
-        </a>
+        <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className=" text-black hover:text-[#005EB8] transition-colors cursor-pointer underline bg-transparent border-none p-0"> Back to Top</button>
       </div>
       <div></div>
       <div className="text-right">
